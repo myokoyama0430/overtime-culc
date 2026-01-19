@@ -29,25 +29,34 @@ st.markdown("""
     .main .block-container { padding: 0; max-width: 100%; }
     header[data-testid="stHeader"] { display: none; }
     
-    [data-testid="stSidebar"] {
-        background-color: var(--bg-card);
-        border-right: 1px solid var(--border);
-        padding-top: 80px;
-    }
-    [data-testid="stSidebar"] > div:first-child { padding: 1.5rem; }
+    [data-testid="stSidebar"] { display: none !important; }
     
-    [data-testid="collapsedControl"] {
-        background: var(--primary) !important;
-        color: white !important;
-        border-radius: 8px !important;
-        top: 70px !important;
-        left: 10px !important;
+    .stats-bar {
+        display: flex;
+        gap: 16px;
+        margin-bottom: 16px;
+        flex-wrap: wrap;
     }
-    [data-testid="collapsedControl"] svg {
-        fill: white !important;
+    .stat-item {
+        background: var(--bg-card);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 12px 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
     }
-    [data-testid="collapsedControl"]:hover {
-        background: var(--primary-dark) !important;
+    .stat-label {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+    }
+    .stat-value {
+        font-size: 1.1rem;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+    .warning-stat .stat-value {
+        color: var(--danger);
     }
     
     .app-header {
@@ -219,44 +228,8 @@ st.markdown("""
         border-radius: var(--radius);
     }
     
-    .sidebar-label {
-        font-size: 0.65rem;
-        font-weight: 600;
-        color: var(--text-muted);
-        text-transform: uppercase;
-        letter-spacing: 0.04em;
-        margin-bottom: 8px;
-    }
-    
-    .stat-box {
-        background: var(--bg-main);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-sm);
-        padding: 12px;
-        margin-bottom: 8px;
-    }
-    
-    .stat-box .label {
-        font-size: 0.65rem;
-        color: var(--text-muted);
-    }
-    
-    .stat-box .value {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--text-primary);
-    }
-    
-    .stat-box .value.red { color: var(--danger); }
-    
-    .filter-box {
-        background: var(--bg-main);
-        border: 1px solid var(--border);
-        border-radius: var(--radius-sm);
-        padding: 8px 12px;
-    }
-    
-    .stCheckbox label { font-size: 0.8rem !important; color: var(--text-primary) !important; }
+    .stCheckbox label { font-size: 0.85rem !important; color: var(--text-primary) !important; }
+    .stCheckbox { margin-bottom: 12px; }
     
     .export-buttons { margin-top: 20px; }
     .export-buttons .stDownloadButton button {
@@ -407,16 +380,16 @@ else:
             total_staff = len(result)
             over_45 = len(result[result['total'] >= 45])
             
-            st.sidebar.markdown('<p class="sidebar-label">統計</p>', unsafe_allow_html=True)
-            st.sidebar.markdown(f'''
-            <div class="stat-box"><p class="label">総スタッフ数</p><p class="value">{total_staff}名</p></div>
-            <div class="stat-box"><p class="label">45時間以上</p><p class="value red">{over_45}名</p></div>
+            st.markdown(f'''
+            <div class="stats-bar">
+                <div class="stat-item"><span class="stat-label">総スタッフ数</span><span class="stat-value">{total_staff}名</span></div>
+                <div class="stat-item warning-stat"><span class="stat-label">45時間以上</span><span class="stat-value">{over_45}名</span></div>
+            </div>
             ''', unsafe_allow_html=True)
             
-            st.sidebar.markdown('<p class="sidebar-label">フィルター</p>', unsafe_allow_html=True)
-            st.sidebar.markdown('<div class="filter-box">', unsafe_allow_html=True)
-            show_45 = st.sidebar.checkbox("45時間以上のみ表示", value=False)
-            st.sidebar.markdown('</div>', unsafe_allow_html=True)
+            col1, col2, col3 = st.columns([1, 2, 1])
+            with col1:
+                show_45 = st.checkbox("45時間以上のみ表示", value=False)
             
             if show_45:
                 display = result[result['total'] >= 45].copy()
