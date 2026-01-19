@@ -104,40 +104,6 @@ st.markdown("""
         margin: 0 auto;
     }
     
-    .upload-box {
-        background: var(--bg-card);
-        border: 2px dashed var(--border);
-        border-radius: var(--radius);
-        padding: 32px 20px 20px;
-        max-width: 400px;
-        margin: 24px auto;
-        text-align: center;
-    }
-    
-    .upload-box:hover { border-color: var(--primary); }
-    
-    .upload-icon {
-        width: 48px; height: 48px;
-        background: var(--primary-light);
-        border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        margin: 0 auto 12px;
-        font-size: 20px;
-        color: var(--primary);
-    }
-    
-    .upload-box h3 {
-        font-size: 0.95rem;
-        font-weight: 600;
-        color: var(--text-primary);
-        margin-bottom: 4px;
-    }
-    
-    .upload-box p {
-        font-size: 0.75rem;
-        color: var(--text-muted);
-        margin-bottom: 12px;
-    }
     
     .feature-grid {
         display: grid;
@@ -278,19 +244,53 @@ st.markdown("""
     
     .stCheckbox label { font-size: 0.8rem !important; color: var(--text-primary) !important; }
     
-    .stFileUploader { margin-top: 4px; }
-    .stFileUploader > div { background: transparent !important; }
+    .upload-container {
+        max-width: 400px;
+        margin: 24px auto;
+    }
+    
+    .stFileUploader { margin: 0 !important; }
+    .stFileUploader > div { background: transparent !important; padding: 0 !important; }
     .stFileUploader label { display: none !important; }
-    .stFileUploader section { padding: 0 !important; background: transparent !important; border: none !important; }
+    .stFileUploader section { 
+        padding: 0 !important; 
+        background: transparent !important; 
+        border: none !important; 
+    }
     .stFileUploader [data-testid="stFileUploaderDropzone"] {
-        background: var(--primary) !important;
-        color: white !important;
-        border-radius: 8px !important;
-        padding: 8px 16px !important;
-        border: none !important;
+        background: var(--bg-card) !important;
+        border: 2px dashed var(--border) !important;
+        border-radius: var(--radius) !important;
+        padding: 40px 24px !important;
+        min-height: 160px !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        transition: all 0.2s ease !important;
     }
     .stFileUploader [data-testid="stFileUploaderDropzone"]:hover {
+        border-color: var(--primary) !important;
+        background: #f0f9ff !important;
+    }
+    .stFileUploader [data-testid="stFileUploaderDropzone"] span {
+        color: var(--text-secondary) !important;
+        font-size: 0.85rem !important;
+    }
+    .stFileUploader [data-testid="stFileUploaderDropzone"] button {
+        background: var(--primary) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 10px 20px !important;
+        font-weight: 500 !important;
+        margin-top: 8px !important;
+    }
+    .stFileUploader [data-testid="stFileUploaderDropzone"] button:hover {
         background: var(--primary-dark) !important;
+    }
+    .stFileUploader small {
+        display: none !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -317,14 +317,11 @@ st.markdown("""
     <h1>残業時間を<span>自動集計</span></h1>
     <p>CSVファイルをアップロードするだけで、スタッフごとの残業時間を自動集計。45時間以上の残業者を一目で確認できます。</p>
 </div>
-<div class="upload-box">
-    <div class="upload-icon">☁️</div>
-    <h3>CSVファイルをアップロード</h3>
-    <p>ドラッグ＆ドロップ、またはクリック</p>
-</div>
 """, unsafe_allow_html=True)
 
-uploaded_file = st.file_uploader("CSV", type=['csv'], label_visibility="collapsed")
+st.markdown('<div class="upload-container">', unsafe_allow_html=True)
+uploaded_file = st.file_uploader("CSVファイルをドラッグ＆ドロップ、またはクリックして選択", type=['csv'], label_visibility="collapsed")
+st.markdown('</div>', unsafe_allow_html=True)
 
 if uploaded_file is None:
     st.markdown("""
