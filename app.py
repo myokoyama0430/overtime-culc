@@ -244,6 +244,21 @@ st.markdown("""
     
     .stCheckbox label { font-size: 0.8rem !important; color: var(--text-primary) !important; }
     
+    .export-buttons { margin-top: 20px; }
+    .export-buttons .stDownloadButton button {
+        width: 100% !important;
+        background: var(--primary) !important;
+        color: white !important;
+        border: none !important;
+        border-radius: 8px !important;
+        padding: 10px 16px !important;
+        font-weight: 500 !important;
+        font-size: 0.85rem !important;
+    }
+    .export-buttons .stDownloadButton button:hover {
+        background: var(--primary-dark) !important;
+    }
+    
     .upload-container {
         max-width: 400px;
         margin: 24px auto;
@@ -345,23 +360,34 @@ else:
         
         df.columns = df.columns.str.strip()
         
-        staff_col = name_col = overtime_col = late_overtime_col = None
+        staff_col = name_col = site_col = overtime_col = late_overtime_col = None
         for col in df.columns:
             if "ｽﾀｯﾌ番号" in col or "スタッフ番号" in col: staff_col = col
             if "氏名" in col and "漢字" in col: name_col = col
+            if "現場名" in col: site_col = col
             if "支払残業時間" in col: overtime_col = col
             if "支払深残時間" in col: late_overtime_col = col
         
         if all([staff_col, name_col, overtime_col, late_overtime_col]):
-            grouped = df.groupby([staff_col, name_col]).agg({
-                overtime_col: 'sum', late_overtime_col: 'sum'
-            }).reset_index()
+            agg_dict = {overtime_col: 'sum', late_overtime_col: 'sum'}
+            group_cols = [staff_col, name_col]
+            
+            if site_col:
+                agg_dict[site_col] = lambda x: ', '.join(x.dropna().unique())
+            
+            grouped = df.groupby(group_cols).agg(agg_dict).reset_index()
             
             grouped['total'] = grouped[overtime_col] + grouped[late_overtime_col]
             grouped['time_str'] = grouped['total'].apply(decimal_to_hours_minutes)
             
-            result = grouped[[staff_col, name_col, 'total', 'time_str']].copy()
-            result.columns = ['staff_no', 'name', 'total', 'time_str']
+            if site_col:
+                result = grouped[[staff_col, name_col, site_col, 'total', 'time_str']].copy()
+                result.columns = ['staff_no', 'name', 'site', 'total', 'time_str']
+            else:
+                result = grouped[[staff_col, name_col, 'total', 'time_str']].copy()
+                result.columns = ['staff_no', 'name', 'total', 'time_str']
+                result['site'] = ''
+            
             result = result.sort_values('staff_no', ascending=True)
             
             total_staff = len(result)
@@ -395,16 +421,40 @@ else:
             rows_html = ""
             for _, row in display.iterrows():
                 cls = "warning" if row['total'] >= 45 else ""
-                rows_html += f'<tr class="{cls}"><td>{row["staff_no"]}</td><td>{row["name"]}</td><td>{row["time_str"]}</td></tr>'
+                rows_html += f'<tr class="{cls}"><td>{row["staff_no"]}</td><td>{row["name"]}</td><td>{row["site"]}</td><td>{row["time_str"]}</td></tr>'
             
             st.markdown(f'''
             <div class="table-scroll">
                 <table class="data-table">
-                    <thead><tr><th>スタッフ番号</th><th>氏名</th><th>合計残業時間</th></tr></thead>
+                    <thead><tr><th>スタッフ番号</th><th>氏名</th><th>現場名</th><th>合計残業時間</th></tr></thead>
                     <tbody>{rows_html}</tbody>
                 </table>
             </div>
             ''', unsafe_allow_html=True)
+            
+            def create_csv(data):
+                export_df = data[['staff_no', 'name', 'site', 'time_str']].copy()
+                export_df.columns = ['スタッフ番号', '氏名', '現場名', '合計残業時間']
+                return export_df.to_csv(index=False).encode('utf-8-sig')
+            
+            st.markdown('<div class="export-buttons">', unsafe_allow_html=True)
+            col1, col2 = st.columns(2)
+            with col1:
+                over_45_data = result[result['total'] >= 45]
+                st.download_button(
+                    label=f"45時間以上をCSV出力 ({len(over_45_data)}名)",
+                    data=create_csv(over_45_data),
+                    file_name="overtime_45plus.csv",
+                    mime="text/csv"
+                )
+            with col2:
+                st.download_button(
+                    label=f"全員をCSV出力 ({len(result)}名)",
+                    data=create_csv(result),
+                    file_name="overtime_all.csv",
+                    mime="text/csv"
+                )
+            st.markdown('</div>', unsafe_allow_html=True)
             
         else:
             st.error("必要な列が見つかりませんでした。")
