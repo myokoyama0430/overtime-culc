@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 
-st.set_page_config(page_title="残業時間集計", layout="wide")
+st.set_page_config(page_title="残業時間集計", layout="wide", initial_sidebar_state="expanded")
 
 st.markdown("""
 <style>
@@ -35,6 +35,20 @@ st.markdown("""
         padding-top: 80px;
     }
     [data-testid="stSidebar"] > div:first-child { padding: 1.5rem; }
+    
+    [data-testid="collapsedControl"] {
+        background: var(--primary) !important;
+        color: white !important;
+        border-radius: 8px !important;
+        top: 70px !important;
+        left: 10px !important;
+    }
+    [data-testid="collapsedControl"] svg {
+        fill: white !important;
+    }
+    [data-testid="collapsedControl"]:hover {
+        background: var(--primary-dark) !important;
+    }
     
     .app-header {
         position: fixed;
