@@ -6,76 +6,165 @@ st.set_page_config(page_title="残業時間集計", layout="wide")
 st.markdown("""
 <style>
     .stApp {
-        background: linear-gradient(135deg, #e8f4fc 0%, #d0e8f7 100%);
+        background-color: #f5f9fc;
     }
     .main .block-container {
-        padding: 2rem 3rem;
-        max-width: 1200px;
+        padding: 1rem 2rem;
+        max-width: 1000px;
     }
-    h1 {
-        color: #1a5f8a;
-        font-size: 2.2rem;
-        font-weight: 700;
-        padding-bottom: 0.5rem;
-        border-bottom: 3px solid #4da6d9;
-        margin-bottom: 1.5rem;
+    header[data-testid="stHeader"] {
+        background-color: #ffffff;
+        border-bottom: 1px solid #e8eef3;
     }
-    h2, h3 {
-        color: #2980b9;
-        font-weight: 600;
+    .header-container {
+        background-color: #ffffff;
+        padding: 1rem 2rem;
+        border-bottom: 1px solid #e8eef3;
+        margin: -1rem -2rem 2rem -2rem;
+        display: flex;
+        align-items: center;
+        gap: 0.8rem;
     }
-    [data-testid="stSidebar"] {
-        background: linear-gradient(180deg, #d6eaf8 0%, #aed6f1 100%);
-        padding: 1rem;
+    .header-icon {
+        background: linear-gradient(135deg, #3b9ddd 0%, #2ecc71 100%);
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 18px;
     }
-    [data-testid="stSidebar"] h2 {
-        color: #1a5f8a;
+    .header-title {
+        color: #2c3e50;
         font-size: 1.2rem;
-        border-bottom: 2px solid #5dade2;
-        padding-bottom: 0.5rem;
+        font-weight: 600;
+        margin: 0;
     }
-    .stFileUploader > div {
-        background-color: #ffffff;
-        border: 2px dashed #5dade2;
-        border-radius: 12px;
-        padding: 1.5rem;
+    .hero-section {
+        text-align: center;
+        padding: 3rem 1rem;
     }
-    .stDataFrame {
-        background-color: #ffffff;
-        border-radius: 12px;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-        padding: 0.5rem;
-    }
-    [data-testid="stMetric"] {
-        background-color: #ffffff;
-        border-radius: 10px;
-        padding: 1rem;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    .hero-title {
+        font-size: 2.2rem;
+        color: #2c3e50;
+        font-weight: 700;
         margin-bottom: 0.8rem;
     }
-    [data-testid="stMetric"] label {
-        color: #2980b9;
+    .hero-title span {
+        color: #3b9ddd;
+    }
+    .hero-subtitle {
+        color: #7f8c8d;
+        font-size: 1rem;
+        line-height: 1.6;
+        margin-bottom: 2rem;
+    }
+    .upload-box {
+        background: #ffffff;
+        border: 2px dashed #d0e3f0;
+        border-radius: 16px;
+        padding: 2.5rem;
+        text-align: center;
+        max-width: 500px;
+        margin: 0 auto 2rem auto;
+    }
+    .upload-icon {
+        width: 60px;
+        height: 60px;
+        background-color: #e8f4fc;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 1rem auto;
+        color: #3b9ddd;
+        font-size: 24px;
+    }
+    .upload-text {
+        color: #2c3e50;
+        font-weight: 600;
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    .upload-subtext {
+        color: #95a5a6;
+        font-size: 0.85rem;
+    }
+    .result-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding: 0 0.5rem;
+    }
+    .result-title {
+        color: #2c3e50;
+        font-size: 1.1rem;
         font-weight: 600;
     }
-    [data-testid="stMetric"] [data-testid="stMetricValue"] {
-        color: #1a5f8a;
-        font-size: 1.8rem;
+    .result-count {
+        color: #7f8c8d;
+        font-size: 0.9rem;
     }
-    .stRadio > label {
-        color: #1a5f8a;
-        font-weight: 500;
+    .data-table {
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.04);
     }
-    .stCheckbox > label {
-        color: #1a5f8a;
-        font-weight: 500;
+    .stDataFrame {
+        border: none !important;
     }
-    div[data-testid="stAlert"] {
+    .stDataFrame > div {
+        border-radius: 12px;
+        overflow: hidden;
+    }
+    [data-testid="stSidebar"] {
+        background-color: #ffffff;
+        border-right: 1px solid #e8eef3;
+    }
+    [data-testid="stSidebar"] [data-testid="stMarkdown"] h2 {
+        color: #2c3e50;
+        font-size: 1rem;
+        font-weight: 600;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid #e8eef3;
+    }
+    [data-testid="stMetric"] {
+        background-color: #f8fbfd;
         border-radius: 10px;
+        padding: 1rem;
+        border: 1px solid #e8eef3;
+    }
+    [data-testid="stMetric"] label {
+        color: #7f8c8d;
+        font-size: 0.85rem;
+    }
+    [data-testid="stMetric"] [data-testid="stMetricValue"] {
+        color: #2c3e50;
+        font-size: 1.5rem;
+        font-weight: 600;
+    }
+    .stCheckbox label {
+        color: #2c3e50;
+    }
+    .stFileUploader > div > div {
+        background-color: transparent !important;
+    }
+    .stFileUploader label {
+        display: none;
     }
 </style>
 """, unsafe_allow_html=True)
 
-st.title("残業時間集計アプリ")
+st.markdown("""
+<div class="header-container">
+    <div class="header-icon">📊</div>
+    <p class="header-title">残業時間集計</p>
+</div>
+""", unsafe_allow_html=True)
 
 def decimal_to_hours_minutes(decimal_hours):
     """10進法の時間を時間:分形式に変換"""
@@ -85,9 +174,24 @@ def decimal_to_hours_minutes(decimal_hours):
     minutes = int(round((decimal_hours - hours) * 60))
     return f"{hours}:{minutes:02d}"
 
-uploaded_file = st.file_uploader("CSVファイルをアップロードしてください", type=['csv'])
+uploaded_file = st.file_uploader("CSVファイル", type=['csv'], label_visibility="collapsed")
 
-if uploaded_file is not None:
+if uploaded_file is None:
+    st.markdown("""
+    <div class="hero-section">
+        <h1 class="hero-title">残業時間を<span>自動集計</span></h1>
+        <p class="hero-subtitle">
+            CSVファイルをアップロードするだけで、スタッフごとの残業時間を自動集計。<br>
+            45時間以上の残業者を一目で確認できます。
+        </p>
+        <div class="upload-box">
+            <div class="upload-icon">↑</div>
+            <p class="upload-text">CSVファイルをアップロード</p>
+            <p class="upload-subtext">ドラッグ＆ドロップ、またはクリックして選択</p>
+        </div>
+    </div>
+    """, unsafe_allow_html=True)
+else:
     try:
         try:
             df = pd.read_csv(uploaded_file, encoding="cp932")
@@ -128,67 +232,64 @@ if uploaded_file is not None:
             result = grouped[[staff_col, name_col, '合計残業時間（10進法）', '合計残業時間（時間:分）']].copy()
             result.columns = ['スタッフ番号', '氏名', '合計残業時間（10進法）', '合計残業時間（時間:分）']
             
-            st.sidebar.header("設定")
+            result = result.sort_values('スタッフ番号', ascending=True)
             
-            sort_option = st.sidebar.radio(
-                "並び順",
-                ["合計残業時間（多い順）", "合計残業時間（少ない順）", "スタッフ番号（昇順）", "スタッフ番号（降順）"]
-            )
-            
-            if sort_option == "合計残業時間（多い順）":
-                result = result.sort_values('合計残業時間（10進法）', ascending=False)
-            elif sort_option == "合計残業時間（少ない順）":
-                result = result.sort_values('合計残業時間（10進法）', ascending=True)
-            elif sort_option == "スタッフ番号（昇順）":
-                result = result.sort_values('スタッフ番号', ascending=True)
-            else:
-                result = result.sort_values('スタッフ番号', ascending=False)
+            st.sidebar.markdown("## フィルター")
+            show_only_over_45 = st.sidebar.checkbox("45時間以上のみ表示", value=False)
             
             st.sidebar.markdown("---")
-            show_only_over_45 = st.sidebar.checkbox("45時間以上のみ表示", value=False)
+            st.sidebar.metric("総スタッフ数", f"{len(result)}名")
+            st.sidebar.metric("45時間以上", f"{len(result[result['合計残業時間（10進法）'] >= 45])}名")
             
             if show_only_over_45:
                 display_df = result[result['合計残業時間（10進法）'] >= 45].copy()
-                st.subheader(f"45時間以上の残業者一覧（{len(display_df)}名）")
+                count_text = f"{len(display_df)}名"
+                title_text = "45時間以上の残業者"
             else:
                 display_df = result.copy()
                 over_45_count = len(result[result['合計残業時間（10進法）'] >= 45])
-                st.subheader(f"全スタッフの残業時間一覧（{len(display_df)}名中、45時間以上: {over_45_count}名）")
+                count_text = f"{len(display_df)}名（45時間以上: {over_45_count}名）"
+                title_text = "スタッフ残業時間一覧"
+            
+            st.markdown(f"""
+            <div class="result-header">
+                <span class="result-title">{title_text}</span>
+                <span class="result-count">{count_text}</span>
+            </div>
+            """, unsafe_allow_html=True)
             
             display_df = display_df.reset_index(drop=True)
-            display_df.index = display_df.index + 1
-            
             output_df = display_df[['スタッフ番号', '氏名', '合計残業時間（時間:分）']].copy()
             
-            over_45_staff = set(display_df[display_df['合計残業時間（10進法）'] >= 45].index)
+            over_45_mask = display_df['合計残業時間（10進法）'] >= 45
             
             def highlight_over_45(row):
-                if row.name in over_45_staff:
-                    return ['background-color: #ffe6e6; color: #c0392b; font-weight: 600'] * len(row)
+                idx = row.name
+                if idx < len(over_45_mask) and over_45_mask.iloc[idx]:
+                    return ['background-color: #fff5f5; color: #e74c3c; font-weight: 600'] * len(row)
                 return ['background-color: #ffffff'] * len(row)
             
             styled_df = output_df.style.apply(highlight_over_45, axis=1)
             styled_df = styled_df.set_properties(**{
                 'font-size': '14px',
-                'padding': '8px 12px',
-                'border-bottom': '1px solid #e0e0e0'
+                'padding': '12px 16px',
+                'border-bottom': '1px solid #f0f3f5'
             })
             styled_df = styled_df.set_table_styles([
                 {'selector': 'th', 'props': [
-                    ('background-color', '#3498db'),
-                    ('color', 'white'),
-                    ('font-weight', '600'),
-                    ('font-size', '14px'),
-                    ('padding', '10px 12px'),
-                    ('text-align', 'left')
+                    ('background-color', '#f8fbfd'),
+                    ('color', '#7f8c8d'),
+                    ('font-weight', '500'),
+                    ('font-size', '13px'),
+                    ('padding', '12px 16px'),
+                    ('text-align', 'left'),
+                    ('border-bottom', '1px solid #e8eef3')
                 ]}
             ])
             
-            st.dataframe(styled_df, use_container_width=True, height=550)
-            
-            st.sidebar.markdown("---")
-            st.sidebar.metric("総スタッフ数", f"{len(result)}名")
-            st.sidebar.metric("45時間以上", f"{len(result[result['合計残業時間（10進法）'] >= 45])}名")
+            st.markdown('<div class="data-table">', unsafe_allow_html=True)
+            st.dataframe(styled_df, use_container_width=True, height=500, hide_index=True)
+            st.markdown('</div>', unsafe_allow_html=True)
             
         else:
             st.error("必要な列が見つかりませんでした。")
@@ -197,10 +298,3 @@ if uploaded_file is not None:
             
     except Exception as e:
         st.error(f"ファイルの読み込みに失敗しました: {e}")
-else:
-    st.markdown("""
-    <div style="background-color: #ffffff; border-radius: 12px; padding: 2rem; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-top: 2rem;">
-        <h3 style="color: #2980b9; margin-bottom: 1rem;">CSVファイルをアップロードしてください</h3>
-        <p style="color: #5d6d7e; font-size: 1rem;">残業時間データを集計し、45時間以上のスタッフを強調表示します</p>
-    </div>
-    """, unsafe_allow_html=True)
